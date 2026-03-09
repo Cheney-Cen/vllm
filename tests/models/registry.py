@@ -588,6 +588,7 @@ _EMBEDDING_EXAMPLE_MODELS = {
         "TIGER-Lab/VLM2Vec-Full", trust_remote_code=True
     ),
     "Qwen2VLForConditionalGeneration": _HfExamplesInfo("MrLight/dse-qwen2-2b-mrl-v1"),
+    "Qwen3VLForEmbedding": _HfExamplesInfo("Qwen/Qwen3-VL-Embedding-2B"),
     "SiglipModel": _HfExamplesInfo("google/siglip-base-patch16-224"),
     "PrithviGeoSpatialMAE": _HfExamplesInfo(
         "ibm-nasa-geospatial/Prithvi-EO-2.0-300M-TL-Sen1Floods11",
