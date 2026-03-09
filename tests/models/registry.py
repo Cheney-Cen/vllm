@@ -616,6 +616,7 @@ _EMBEDDING_EXAMPLE_MODELS = {
     "Qwen3VLNemotronEmbedModel": _HfExamplesInfo(
         "nvidia/nemotron-colembed-vl-4b-v2",
     ),
+    "Qwen3VLForEmbedding": _HfExamplesInfo("Qwen/Qwen3-VL-Embedding-2B"),
     "SiglipModel": _HfExamplesInfo("google/siglip-base-patch16-224"),
     "PrithviGeoSpatialMAE": _HfExamplesInfo(
         "ibm-nasa-geospatial/Prithvi-EO-2.0-300M-TL-Sen1Floods11",

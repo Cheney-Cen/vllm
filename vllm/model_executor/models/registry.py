@@ -260,6 +260,7 @@ _EMBEDDING_MODELS = {
     "ColQwen3": ("colqwen3", "ColQwen3Model"),
     "OpsColQwen3Model": ("colqwen3", "ColQwen3Model"),
     "Qwen3VLNemotronEmbedModel": ("colqwen3", "ColQwen3Model"),
+    "Qwen3VLForEmbedding": ("qwen3_vl_embedding", "Qwen3VLForEmbeddingModel"),
     "SiglipModel": ("siglip", "SiglipEmbeddingModel"),
     "LlamaNemotronVLModel": (
         "nemotron_vl",
