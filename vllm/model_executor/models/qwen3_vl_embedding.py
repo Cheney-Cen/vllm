@@ -80,6 +80,12 @@ class Qwen3VLEmbeddingProjector(nn.Module):
         self.linear_fc2 = nn.Linear(self.hidden_size, out_hidden_size)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # Align input dtype with module parameters (e.g. when model runs in fp16
+        # on V100 but projector was created in float32).
+        target_dtype = self.norm.weight.dtype
+        if x.dtype != target_dtype:
+            x = x.to(target_dtype)
+
         # The original code normalizes on a flattened view when
         # ``use_postshuffle_norm`` is enabled. We preserve that behavior here.
         if self.use_postshuffle_norm:
@@ -169,6 +175,16 @@ class Qwen3VLForEmbeddingModel(Qwen3VLForConditionalGeneration):
             spatial_merge_size=1,
             use_postshuffle_norm=True,
         )
+
+        # Align projector dtypes with model (e.g. fp16 when V100 falls back from bf16).
+        model_dtype = vllm_config.model_config.dtype
+        if isinstance(model_dtype, str):
+            model_dtype = getattr(torch, model_dtype)
+        self.vision_projector = self.vision_projector.to(dtype=model_dtype)
+        self.deepstack_projector_list = self.deepstack_projector_list.to(
+            dtype=model_dtype
+        )
+        self.projector_256 = self.projector_256.to(dtype=model_dtype)
 
         # Build the sequence pooler:
         # - pooling method: LAST token
