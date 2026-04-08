@@ -548,6 +548,28 @@ class MultiModalFlatField(BaseMultiModalField):
     slices: Sequence[slice] | Sequence[Sequence[slice]]
     dim: int = 0
 
+    def reduce_data(
+        self,
+        elems: list[MultiModalFieldElem],
+        *,
+        device: torch.types.Device = None,
+        pin_memory: bool = False,
+    ) -> NestedTensors:
+        # For flat fields targeting GPU with multiple tensors,
+        # move individual tensors to device first then concat on device.
+        # This avoids expensive CPU concat for large tensors (e.g. pixel_values).
+        if (
+            device is not None
+            and not self.keep_on_cpu
+            and len(elems) > 1
+            and all(isinstance(e.data, torch.Tensor) for e in elems)
+        ):
+            batch = [
+                e.data.to(device=device, non_blocking=True) for e in elems
+            ]
+            return self._reduce_data(batch, pin_memory=False)
+        return super().reduce_data(elems, device=device, pin_memory=pin_memory)
+
     def build_elems(
         self,
         modality: str,

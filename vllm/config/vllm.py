@@ -903,15 +903,6 @@ class VllmConfig:
             # if cudagraph_mode has full cudagraphs, we need to check support
             if model_config := self.model_config:
                 if (
-                    self.compilation_config.cudagraph_mode.has_full_cudagraphs()
-                    and model_config.pooler_config is not None
-                ):
-                    logger.warning_once(
-                        "Pooling models do not support full cudagraphs. "
-                        "Overriding cudagraph_mode to PIECEWISE."
-                    )
-                    self.compilation_config.cudagraph_mode = CUDAGraphMode.PIECEWISE
-                elif (
                     model_config.is_encoder_decoder
                     and self.compilation_config.cudagraph_mode
                     not in (CUDAGraphMode.NONE, CUDAGraphMode.FULL_DECODE_ONLY)
