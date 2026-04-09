@@ -45,7 +45,12 @@ def flash_attn_maxseqlen_wrapper(
         cu_seqlens = torch.arange(
             0, (batch_size + 1) * q_len, step=q_len, dtype=torch.int32, device=q.device
         )
-    max_seqlen = q_len if max_seqlen is None else max_seqlen.item()
+    if max_seqlen is None:
+        max_seqlen = q_len
+    elif isinstance(max_seqlen, torch.Tensor):
+        max_seqlen = max_seqlen.item()
+    else:
+        max_seqlen = int(max_seqlen)
 
     q, k, v = (einops.rearrange(x, "b s ... -> (b s) ...") for x in [q, k, v])
     output = flash_attn_varlen_func(
@@ -126,7 +131,12 @@ def triton_attn_wrapper(
         cu_seqlens = torch.arange(
             0, (batch_size + 1) * q_len, step=q_len, dtype=torch.int32, device=q.device
         )
-    max_seqlen = q_len if max_seqlen is None else max_seqlen.item()
+    if max_seqlen is None:
+        max_seqlen = q_len
+    elif isinstance(max_seqlen, torch.Tensor):
+        max_seqlen = max_seqlen.item()
+    else:
+        max_seqlen = int(max_seqlen)
 
     q, k, v = (einops.rearrange(x, "b s ... -> (b s) ...") for x in [q, k, v])
     output = torch.empty_like(q)
